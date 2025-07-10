@@ -1,4 +1,5 @@
 const express = require('express');
+const cluster = require('cluster');
 
 const app = express();
 
@@ -9,7 +10,7 @@ function delay(duration) {
   }
 }
 
-app.get('/', (req, res) => {
+  app.get('/', (req, res) => {
   res.send(`Performance example: ${process.pid}`);
 });
 
@@ -18,6 +19,14 @@ app.get('/timer', (req, res) => {
   res.send(`Beep beep beep! ${process.pid}`);
 });
 
-console.log('Running server.js...');
-console.log('Worker process started.');
-app.listen(3000);
+if(cluster.isMaster){
+  //Code here runs ONLY on start (Master)
+  console.log('Master started')
+  cluster.fork();
+  cluster.fork();
+} else {
+ //code here runs normally (Worker)
+  console.log('Workers working')
+  app.listen(3000);
+}
+
