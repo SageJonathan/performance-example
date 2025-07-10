@@ -1,6 +1,5 @@
 const express = require('express');
-const cluster = require('cluster');
-const os = require('os');
+
 
 const app = express();
 
@@ -20,16 +19,9 @@ app.get('/timer', (req, res) => {
   res.send(`Beep beep beep! ${process.pid}`);
 });
 
-if(cluster.isMaster){
-  //Code here runs ONLY on start (Master)
-  console.log('Master started')
-  const NUM_WORKERS = os.cpus().length;
-  for (let i =0; i<NUM_WORKERS; i++){
-    cluster.fork();
-  }
-} else {
- //code here runs normally (Worker)
-  console.log('Workers working')
+  console.log('Serving Running')
+  console.log('Cluster Workers: Operational')
   app.listen(3000);
-}
+
+
 
